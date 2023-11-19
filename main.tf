@@ -36,7 +36,7 @@ resource "aws_security_group" "main" {
 }
 
 #Create the aws_rds_cluster.
-resource "aws_rds_cluster" "default" {
+resource "aws_rds_cluster" "main" {
   cluster_identifier               = "${local.name_prefix}-cluster"
   engine                           = var.engine
   engine_version                   = var.engine_version
@@ -50,6 +50,16 @@ resource "aws_rds_cluster" "default" {
   vpc_security_group_ids           = [aws_security_group.main.id]
   skip_final_snapshot              = var.skip_final_snapshot
   tags                             = merge(local.tags, { Name = "${local.name_prefix}-cluster" })
+}
+
+#Create the aws_rds_cluster instance
+resource "aws_rds_cluster_instance" "cluster_instances" {
+  count              = var.instance_count
+  identifier         = "${local.name_prefix}-cluster-instance-${count.index+1}"
+  cluster_identifier = aws_rds_cluster.main.id
+  instance_class     = var.instance_class
+  engine             = aws_rds_cluster.main.engine
+  engine_version     = aws_rds_cluster.main.engine_version
 }
 
 

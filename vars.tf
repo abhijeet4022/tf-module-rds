@@ -11,3 +11,5 @@ variable "engine" {}
 variable "engine_version" {}
 variable "backup_retention_period" {}
 variable "preferred_backup_window" {}
+variable "instance_class" {}
+variable "instance_count" {}
